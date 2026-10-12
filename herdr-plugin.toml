@@ -1,0 +1,70 @@
+id = "bring-shrubbery.auto-pull-main"
+name = "Auto Pull Main"
+version = "0.1.0"
+min_herdr_version = "0.7.5"
+description = "Keep the main branch of every repo open in Herdr fast-forwarded to its remote on a timer. Never touches dirty, diverged, or busy checkouts."
+platforms = ["linux", "macos"]
+
+# One-shot startup hook: (re)starts the background poller for this Herdr server.
+[[startup]]
+command = ["bash", "bin/startup.sh"]
+
+# Pull every open repo right now (also reports "up to date" results).
+[[actions]]
+id = "pull-now"
+title = "Auto Pull Main: pull all open repos now"
+command = ["bash", "bin/action.sh", "pull-now"]
+
+# Pull only the repo behind the current pane / workspace.
+[[actions]]
+id = "pull-here"
+title = "Auto Pull Main: pull this repo now"
+command = ["bash", "bin/action.sh", "pull-here"]
+
+# Open the status popup (daemon state, last run, recent log).
+[[actions]]
+id = "status"
+title = "Auto Pull Main: show status"
+command = ["bash", "bin/action.sh", "status"]
+
+[[actions]]
+id = "pause"
+title = "Auto Pull Main: pause automatic pulls"
+command = ["bash", "bin/action.sh", "pause"]
+
+[[actions]]
+id = "resume"
+title = "Auto Pull Main: resume automatic pulls"
+command = ["bash", "bin/action.sh", "resume"]
+
+[[actions]]
+id = "toggle"
+title = "Auto Pull Main: toggle automatic pulls"
+command = ["bash", "bin/action.sh", "toggle"]
+
+[[actions]]
+id = "restart-daemon"
+title = "Auto Pull Main: restart background poller"
+command = ["bash", "bin/action.sh", "restart"]
+
+[[actions]]
+id = "stop-daemon"
+title = "Auto Pull Main: stop background poller"
+command = ["bash", "bin/action.sh", "stop"]
+
+# Newly opened repos get pulled on the next loop iteration instead of waiting a full interval.
+[[events]]
+on = "workspace.created"
+command = ["bash", "bin/action.sh", "poke"]
+
+[[events]]
+on = "worktree.opened"
+command = ["bash", "bin/action.sh", "poke"]
+
+[[panes]]
+id = "status"
+title = "Auto Pull Main"
+placement = "popup"
+width = "80%"
+height = "75%"
+command = ["bash", "bin/status.sh"]
